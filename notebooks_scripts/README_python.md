@@ -1,42 +1,67 @@
-🐍 Geração de Dados Fictícios — Código Python
+# 🐍 Geração e Preparação de Dados Fictícios em Python
 
-O código desta pasta (notebooks_scripts/) é a primeira camada da solução FP&A: ele gera a base de dados que alimenta o modelo financeiro em Google Sheets (Modelo FP&A - Base Tratada). Os cálculos e a metodologia estão documentados no README da pasta dashboards_modelos/.
+Documentação técnica do notebook Python (`Codigo_python.ipynb`), responsável pela primeira camada da solução de FP&A: a simulação de dados sintéticos, o cálculo de indicadores de referência e a consolidação da base que alimenta o modelo financeiro no Google Sheets.
 
-🎯 Por que este código existe
-Confidencialidade: dados financeiros reais de clientes e faturas não podem ser publicados. Todos os dados são sintéticos, e cada tabela traz a coluna dados_ficticios = True.
-Reprodutibilidade: a semente fixa (SEED = 42) garante que qualquer pessoa gere exatamente a mesma base e chegue aos mesmos resultados do modelo.
-Realismo: a base reproduz comportamentos típicos de uma carteira de recebíveis (clientes pontuais, atrasados e inadimplentes), o que permite testar aging, PDD e projeção de caixa de forma significativa.
-Validação cruzada: o código também calcula VPL, TIR, Payback, liquidez e aging em Python. Esses resultados conferem com os do modelo em planilha, o que valida as fórmulas.
-⚙️ O que o código faz
-Etapa	Descrição
-Clientes	40 clientes com perfil de pagamento: 24 pontuais, 11 com atraso leve e 5 com atraso grave.
-Faturas	Emissões mensais com vencimento, pagamento e inadimplência (10% das faturas dos clientes de atraso grave não são pagas).
-Histórico	Faturamento e recebimentos mensais, agregados a partir das faturas.
-Curva de recebimento	Percentual recebido $k$ meses após a emissão, calibrado nas faturas pagas. Usa apenas faturas com mais de 180 dias, para reduzir o viés de faturas recentes ainda não pagas.
-Aging e PDD	Faixas de atraso em relação à data-base (31/10/2026) com alíquotas progressivas de provisão.
-Fluxo projetado	12 meses em 3 cenários (Pessimista, Base e Otimista), com CAPEX, entrada do projeto e saldo de caixa.
-Viabilidade	VPL, TIR, Payback Simples e Descontado com numpy-financial.
-🛡️ Verificações de sanidade (assert)
+> **Nota de Metodologia:** Os cálculos e premissas financeiras aplicados (WACC, VPL, TIR, Payback e réguas de PDD) estão detalhados na documentação da pasta [`dashboards_modelos/`](../dashboards_modelos/).
 
-O código interrompe a execução se alguma regra for violada: a curva soma 100%, o vencimento é posterior à emissão, nenhum pagamento ocorre antes da emissão ou depois da data-base, e o histórico não tem "partida a frio".
+---
 
-📦 Saídas
+## 🎯 Por Que Este Código Existe
 
-Os arquivos são gravados na pasta data/, criada automaticamente ao lado do notebook:
+* **🔒 Confidencialidade:** Dados financeiros reais de empresas, clientes e faturas são protegidos por sigilo. Por isso, toda a base foi gerada de forma sintética. Cada tabela exportada contém a tag rastreável `dados_ficticios = True`.
+* **🔄 Reprodutibilidade (Determinismo):** A utilização de uma semente aleatória fixa (`SEED = 42`) garante que qualquer pessoa ao rodar o notebook obtenha exatamente os mesmos dados e os mesmos resultados finais.
+* **📈 Realismo de Carteira:** A geração simula comportamentos típicos de uma carteira de recebíveis, como perfis de clientes (pontuais, atrasos leves e inadimplência grave), defasagem entre emissão e recebimento (curva de recebimento) e envelhecimento de faturas (Aging).
+* **⚖️ Validação Cruzada (Cross-Validation):** O código calcula VPL, TIR, Payback, saldo de caixa e aging em Python (`numpy-financial` e `pandas`), permitindo conferir os resultados das fórmulas implementadas no Google Sheets.
 
-9 arquivos .csv: clientes, faturas, fluxo_historico, curva_recebimento, aging_detalhe, aging_resumo, fluxo_projetado, resumo_liquidez e projeto_indicadores;
-1 arquivo portfolio_financeiro.xlsx, com uma aba por tabela, usado como base para o modelo em Google Sheets.
-▶️ Como executar
+---
 
-O notebook foi desenvolvido no Google Colab. Basta executar as células em ordem: a primeira instala o numpy-financial e importa as bibliotecas, e a segunda gera as tabelas e imprime um resumo dos resultados.
+## ⚙️ Arquitetura do Script e Etapas de Execução
 
-Para rodar localmente:
+| Etapa | Descrição Técnica |
+| :--- | :--- |
+| **1. Clientes** | Geração de 40 clientes distribuídos em 3 perfis de pagamento: 24 pontuais, 11 com atraso leve e 5 com atraso grave. |
+| **2. Faturas** | Emissões mensais com cálculo automático de vencimento, pagamento efetivo e inadimplência (10% de chance de calote para faturas de clientes com atraso grave). |
+| **3. Histórico** | Consolidação mensal de faturamento e recebimentos realizados no período anterior (Nov/24 a Out/26). |
+| **4. Curva de Recebimento** | Matriz percentual de recebimento $`k`$ meses após a emissão. Considera apenas faturas emitidas há mais de 180 dias, para reduzir o viés de censura (faturas recentes ainda não tiveram tempo de ser pagas). |
+| **5. Aging e PDD** | Classificação das faturas em aberto por faixas de atraso em relação à data-base (`31/10/2026`) e aplicação de alíquotas progressivas de PDD. |
+| **6. Fluxo Projetado** | Projeção de 12 meses (Nov/26 a Out/27) sob 3 cenários (Pessimista, Base e Otimista), considerando CAPEX e a entrada do projeto (fluxo do ano 1 diluído em 12 parcelas). |
+| **7. Viabilidade** | Cálculo automatizado de VPL, TIR, Payback Simples e Payback Descontado utilizando a biblioteca `numpy-financial`. |
 
-bash
-pip install numpy numpy-financial pandas openpyxl
+---
 
-No Colab, a pasta data/ fica no ambiente temporário da sessão. Baixe os arquivos antes de encerrá-la.
+## 🛡️ Verificações de Sanidade (`assert`)
 
-As premissas (WACC, CAPEX, cenários, curva de atraso e régua de PDD) ficam na seção de parâmetros, no topo do código, e podem ser alteradas para simular outros contextos.
+O código conta com testes de integridade estrutural que interrompem a execução se alguma premissa for violada:
 
-⚠️ Aviso: todos os dados são sintéticos e não representam nenhuma empresa ou pessoa real.
+1. **Curva de Recebimento:** `assert abs(curva.sum() - 1) < 1e-9` (A soma das frações deve ser exatamente 100%).
+2. **Cronologia:** `assert (faturas["data_vencimento"] > faturas["data_emissao"]).all()` (Vencimento sempre posterior à emissão).
+3. **Data-base:** `assert (pagas["data_pagamento"] <= DATA_REF).all()` (Nenhum pagamento registrado no futuro).
+4. **Distribuição:** Validação da quantidade exata de perfis de risco e ausência de *partida a frio* (*cold start*) no histórico.
+
+---
+
+## 📦 Saídas Geradas (Pasta `data/`)
+
+Ao executar o notebook, a pasta `data/` é criada automaticamente no diretório de execução, contendo:
+
+* **9 Arquivos CSV (`.csv`):** `clientes`, `faturas`, `fluxo_historico`, `curva_recebimento`, `aging_detalhe`, `aging_resumo`, `fluxo_projetado`, `resumo_liquidez` e `projeto_indicadores`.
+* **1 Planilha Consolidada (`portfolio_financeiro.xlsx`):** Contendo uma aba para cada tabela exportada, utilizada como insumo principal para carga no Google Sheets.
+
+---
+
+## ▶️ Como Executar
+
+### Opção 1: Google Colab (Recomendado)
+1. Abra o arquivo `Codigo_python.ipynb` no Google Colab.
+2. Execute todas as células em sequência (`Ctrl + F9`).
+3. Baixe os arquivos gerados na aba lateral de arquivos (pasta `data/`) antes de encerrar a sessão.
+
+### Opção 2: Ambiente Local
+O notebook foi executado em Python 3.13 (Google Colab). No terminal:
+
+```bash
+pip install numpy numpy-financial pandas openpyxl jupyter
+jupyter notebook Codigo_python.ipynb
+```
+
+> ⚠️ **Aviso:** todos os dados são sintéticos e não representam nenhuma empresa ou pessoa real.
