@@ -2,7 +2,7 @@
 
 Documentação técnica do notebook Python (`Codigo_python.ipynb`), responsável pela primeira camada da solução de FP&A: a simulação de dados sintéticos, o cálculo de indicadores de referência e a consolidação da base que alimenta o modelo financeiro no Google Sheets.
 
-> **Nota de Metodologia:** Os cálculos e premissas financeiras aplicados (WACC, VPL, TIR, Payback e réguas de PDD) estão detalhados na documentação da pasta [`dashboards_modelos/`](../dashboards_modelos/).
+> **Nota de Metodologia:** Os cálculos e premissas financeiras aplicados (WACC, VPL, TIR, Payback e réguas de PDD) estão detalhados na documentação da pasta [`dashboards_modelos/`](https://github.com/LeticiaPaesano/financial-planning-model-fpa/tree/main/dashboards_modelos).
 
 ---
 
@@ -51,12 +51,17 @@ Ao executar o notebook, a pasta `data/` é criada automaticamente no diretório 
 
 ## ▶️ Como Executar
 
-### Opção 1: Google Colab (Recomendado)
+Você pode interagir com o projeto de diferentes maneiras, dependendo do seu objetivo:
+
+Opção 1: Baixar os Dados Prontos (Acesso Direto)
+Se o seu objetivo é apenas visualizar os arquivos gerados ou alimentar outras ferramentas sem rodar o código, você pode acessar e baixar diretamente os arquivos prontos na pasta [data/ do repositório no GitHub]( https://github.com/LeticiaPaesano/financial-planning-model-fpa/tree/main/data).
+
+### Opção 2: Google Colab (Recomendado)
 1. Abra o arquivo `Codigo_python.ipynb` no Google Colab.
 2. Execute todas as células em sequência (`Ctrl + F9`).
 3. Baixe os arquivos gerados na aba lateral de arquivos (pasta `data/`) antes de encerrar a sessão.
 
-### Opção 2: Ambiente Local
+### Opção 3: Ambiente Local
 O notebook foi executado em Python 3.13 (Google Colab). No terminal:
 
 ```bash
