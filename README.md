@@ -323,6 +323,8 @@ O CAPEX fica fixo, porque o investimento é pago no início, e a incerteza está
 | Base (0%) | R$ 703.414,71 |
 | +10% | R$ 973.756,18 |
 
+>A análise de sensibilidade concentra-se nos cenários adversos (-30% a +10%), pois o objetivo é avaliar a margem de segurança do investimento. O ponto de equilíbrio do VPL ocorre com queda de cerca de 26% nas entradas do projeto.
+
 A matriz completa (variação das entradas × taxa de desconto de 10% a 18%) está na aba `Viabilidade` do modelo e na [documentação técnica](dashboards_modelos/README.md).
 
 ### 🕰️ Aging e PDD
@@ -356,12 +358,12 @@ A matriz completa (variação das entradas × taxa de desconto de 10% a 18%) est
 
 | Evolução do Saldo de Caixa (12 meses) | Sensibilidade do VPL (Cenário Base) |
 |:---:|:---:|
-| <img width="420" alt="Evolução Projetada do Saldo de Caixa (12 Meses)" src="https://github.com/user-attachments/assets/e03914b1-edc4-4d16-a6c3-9de0ca889d6b" /> | <img width="420" alt="Sensibilidade do VPL por Variação (Cenário Base)" src="https://github.com/user-attachments/assets/dbac539f-1695-4fda-b98e-e113878dc2c5" /> |
+| <img width="580" height="316" alt="Evolução Projetada do Saldo de Caixa (12 Meses)" src="https://github.com/user-attachments/assets/b8069808-eb02-42ef-9e2e-6faaa46e684c" />| <img width="580" height="343" alt="Sensibilidade do VPL por Variação (Cenário Base)" src="https://github.com/user-attachments/assets/f8c02403-52ef-42f6-b86c-5ba79b80178c" /> |
 
 <p align="center"><b>Carteira de Recebíveis: Saldo vs. PDD por Faixa</b></p>
 
 <p align="center">
-  <img width="600" alt="Carteira de Recebíveis: Saldo vs. PDD por Faixa" src="https://github.com/user-attachments/assets/bbce23bc-37a8-460a-90d7-67c6660bbcc0" />
+<img width="754" height="339" alt="Carteira de Recebíveis_ Saldo vs  PDD por Faixa" src="https://github.com/user-attachments/assets/00d53aba-8218-4fe6-a250-808d3ab6954d" />
 </p>
 
 ---
@@ -371,22 +373,20 @@ A matriz completa (variação das entradas × taxa de desconto de 10% a 18%) est
 ```text
 financial-planning-model-fpa/
 │
-├── README.md                           <- Apresentação executiva e dicionário apresentação
+├── 📁 dashboards_modelos/                        <- Modelo financeiro e painel
+│   └── 📁 dashboards_modelos/
+│       ├── Dashboard FP&A - Modelo e Indicadores.xlsx  <- Painel executivo (2 abas)
+│       └── Modelo FP&A - Base Tratada.xlsx             <- Cálculos e projeções (13 abas)
 │
+├── 📁 data/                                      <- Base fictícia bruta
+│   └── Base_ficticia_bruta.xlsx
 │
-├── 📁 data/                            <- Tabelas em CSV e Excel consolidado
-│   └── portfolio_financeiro.xlsx
+├── 📁 notebooks_scripts/                         <- Geração dos dados em Python
+│   ├── Codigo_python.ipynb                       <- Gerador sintético determinístico e validações (SEED 42)
+│   └── README_python.md                          <- Manual de execução do script
 │
-├── 📁 notebooks_scripts/               <- Geração dos dados em Python
-│   ├── Codigo_python.ipynb             <- Gerador sintético determinístico e validações (SEED 42)
-│   └── README.md                       <- Manual de execução do script
-│
-└── 📁 dashboards_modelos/              <- Modelo financeiro e painel
-    ├── Modelo FP&A - Base Tratada.xlsx <- Cálculos e projeções (13 abas)
-    ├── Dashboard FP&A - Modelo e Indicadores.xlsx <- Painel executivo (2 abas)
-    └── README.md                       <- Manual de fórmulas e metodologia financeira
-```
-
+└── README.md                                     <- Apresentação executiva e dicionário de dados
+````
 ---
 
 ## 🛠️ ${\color{#1F6FEB}\textsf{Tecnologias e Ferramentas}}$
